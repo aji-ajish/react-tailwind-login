@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+
+import ToggleButton from "./ToggleButton";
+import Signup from "./Signup";
+import Login from "./Login";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      className="flex justify-center items-center"
+      style={{
+        backgroundImage: `url('https://wallpapers.com/images/featured/ultra-hd-wazf67lzyh5q7k32.jpg')`,
+        backgroundAttachment:'fixed',
+        backgroundRepeat:'no-repeat',
+        backgroundSize:'100% 100%',
+        height:'100vh'
+        
+      }}
+    >
+      <div className="h-fit w-fit border bg-green-0 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-50  px-7 py-12" >
+        <ToggleButton />
+          <Login/>
+          <Signup/>
+      </div>
     </div>
   );
 }
