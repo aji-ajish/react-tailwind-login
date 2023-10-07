@@ -21,6 +21,12 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `npm run build`
 
+### `Login Form`
+![Screenshot from 2023-10-07 22-54-57](https://github.com/aji-ajish/react-tailwinf-login/assets/125542322/e49277c0-3d07-49e9-af25-e4a4f4ed0ef7)
+
+### `Signup Form`
+![Screenshot from 2023-10-07 22-55-12](https://github.com/aji-ajish/react-tailwinf-login/assets/125542322/896bb3ac-d4e1-4414-a5e7-0968f55d0d38)
+
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
