@@ -1,7 +1,8 @@
-
+import React from 'react';
+import { BrowserRouter, Route,Routes  } from 'react-router-dom';
 import ToggleButton from "./ToggleButton";
-import Signup from "./Signup";
-import Login from "./Login";
+import DashBoard from "./DashBoard";
+
 
 function App() {
   return (
@@ -16,11 +17,12 @@ function App() {
         
       }}
     >
-      <div className="h-fit w-fit border bg-green-0 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-50  px-7 py-12" >
-        <ToggleButton />
-          <Login/>
-          <Signup/>
-      </div>
+      <BrowserRouter>
+        <Routes>
+        <Route path='/' element={<ToggleButton />}></Route> 
+        <Route path='dashboard' element={<DashBoard />}></Route> 
+        </Routes>
+        </BrowserRouter>
     </div>
   );
 }

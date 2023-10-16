@@ -1,14 +1,13 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import {
   FiMail,
   FiEye,
   FiEyeOff,
   FiLock,
-  FiLogIn,
-  FiLogOut,
 } from "react-icons/fi";
 
-const signupController = (preState, action) => {
+const loginController = (preState, action) => {
   switch (action.type) {
     case "USEREMAIL":
       return { ...preState, userEmail: action.payload };
@@ -20,14 +19,16 @@ const signupController = (preState, action) => {
       return { ...preState, userPasswordError: action.payload };
     case "SHOWPASSWORD":
       return { ...preState, showPassword: action.payload };
-      case "ISLOADING":
+    case "ISLOADING":
       return { ...preState, isLoading: action.payload };
     default:
       break;
   }
 };
 
-export default function Signup() {
+export default function Login({
+  loginData
+}) {
 
   const initialState = {
     userEmail: "",
@@ -37,8 +38,11 @@ export default function Signup() {
     userPasswordError: false,
     showPassword: false,
   };
-  const [state, dispatcher] = useReducer(signupController, initialState);
 
+  const [state, dispatcher] = useReducer(loginController, initialState);
+
+  const [userData, setUserdata] = useState(null)
+  const navigate = useNavigate();
 
   const userEmailHandler = (e) => {
     dispatcher({ type: "USEREMAIL", payload: e.target.value });
@@ -48,28 +52,42 @@ export default function Signup() {
     dispatcher({ type: "USERPASSWORD", payload: e.target.value });
   };
 
+  useEffect(() => {
+    const loginData = localStorage.getItem('formData');
+    if (loginData) {
+      const parsedData = JSON.parse(loginData);
+      setUserdata(parsedData)
+    }
+  }, [])
 
   const handelLogin = (e) => {
     e.preventDefault();
-    console.log(state.usernameError)
-    if (!state.userEmailError &&  !state.userPasswordError) {
-      
+    if (!state.userEmailError && !state.userPasswordError) {
+
       dispatcher({ type: "ISLOADING", payload: true });
       setTimeout(() => {
-        const formData = {
-          userEmail: state.userEmail,
-          userPassword: state.userPassword,
-        };
-        
-        dispatcher({ type: "ISLOADING", payload: false });
+        if (state.userEmail === userData.userEmail && state.userPassword === userData.userPassword) {
+          // Navigate to dashboard (assuming you have a function to handle navigation)
+          sessionStorage.setItem('userName',userData.userName)
+          sessionStorage.setItem('userEmail',userData.userEmail)
+          sessionStorage.setItem('userPhone',userData.userPhone)
+          navigate('/dashboard');
+          // Hide loading indicator
+          dispatcher({ type: "ISLOADING", payload: false });
+        } else {
+          alert('Incorrect email or password');
+
+          // Hide loading indicator
+          dispatcher({ type: "ISLOADING", payload: false });
+        }
       }, 1000);
 
     }
 
   };
 
-  const handleLoginButton = () => {
 
+  const handleLoginButton = (props) => {
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (regexEmail.test(state.userEmail)) {
       dispatcher({ type: "USEREMAILERROR", payload: false });
@@ -86,7 +104,7 @@ export default function Signup() {
   }
 
   const isFormValid = () => {
-    return  state.userEmail !== ''  && state.userPassword !== '';
+    return state.userEmail !== '' && state.userPassword !== '';
   };
 
   const togglePasswordVisible = () => {
@@ -94,52 +112,55 @@ export default function Signup() {
     dispatcher({ type: "SHOWPASSWORD", payload: !(passwordToggle) });
   }
   return (
-    <div className="absolute">
-      <form
-        autoComplete="off"
-        onSubmit={handelLogin}
-        className="flex flex-col pt-3"
-      >
+    <form
+      autoComplete="off"
+      onSubmit={handelLogin}
+      className={`flex flex-col pt-3 `}
+    >
 
-        <div className="mx-auto text-2xl flex items-center py-4 text-slate-200">
-          <FiMail className="absolute" />
-          <input
-            type="text"
-            className="w-80 relative bg-transparent pl-9 pr-10 focus:outline-none border-b-2 border-gray-200 placeholder-gray-200"
-            placeholder="Enter your email"
-            value={state.userEmail}
-            onChange={userEmailHandler}
-          />
-          <p className="absolute  text-sm pl-20 mt-12 text-red-500">{state.userEmailError ? 'enter valid email' : ''}</p>
-        </div>
+      <div className="mx-auto text-2xl flex items-center py-4 text-slate-200">
+        <FiMail className="absolute" />
+        <input
+          type="text"
+          className="w-80 relative bg-transparent pl-9 pr-10 focus:outline-none border-b-2 border-gray-200 placeholder-gray-200"
+          placeholder="Enter your email"
+          value={state.userEmail}
+          onChange={userEmailHandler}
+        />
+        <p className="absolute  text-sm pl-20 mt-12 text-red-500">{state.userEmailError ? 'enter valid email' : ''}</p>
+      </div>
 
-        <div className="mx-auto text-2xl flex items-center py-4 text-slate-200">
-          <FiLock className="absolute" />
-          <input
-            type={state.showPassword ? 'text' : 'password'}
-            className="w-80 relative bg-transparent pl-9 pr-10 focus:outline-none border-b-2 border-gray-200 placeholder-gray-200"
-            placeholder="Enter your password"
-            value={state.userPassword}
-            onChange={userPasswordHandler}
-          />
-          <p className="absolute text-sm pl-20 mt-12 text-red-500">{state.userPasswordError ? 'enter valid password' : ''}</p>
+      <div className="mx-auto text-2xl flex items-center py-6 text-slate-200">
+        <FiLock className="absolute" />
+        <input
+          type={state.showPassword ? 'text' : 'password'}
+          className="w-80 relative bg-transparent pl-9 pr-10 focus:outline-none border-b-2 border-gray-200 placeholder-gray-200"
+          placeholder="Enter your password"
+          value={state.userPassword}
+          onChange={userPasswordHandler}
+        />
+        <p className="absolute text-sm pl-20 mt-12 text-red-500">{state.userPasswordError ? 'enter valid password' : ''}</p>
 
-          <div className=" flex items-center absolute ml-72" onClick={togglePasswordVisible}>
-            {
-              state.showPassword ? (<FiEye className="relative" />) : (<FiEyeOff className="absolute" />)
-            }
-          </div>
+        <div className=" flex items-center absolute ml-72" onClick={togglePasswordVisible}>
+          {
+            state.showPassword ? (<FiEye className="relative" />) : (<FiEyeOff className="absolute" />)
+          }
         </div>
-        <div className="">
-          <input type="submit" value={`${state.isLoading ? 'Loading ...' : 'Login'}`} className={`${!isFormValid() ? 'cursor-no-drop bg-slate-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-50' : 'cursor-pointer bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500'}  mx-auto text-2xl flex items-center py-2 my-3  text-slate-200  w-48 justify-center rounded-full space-x-3 overflow-hidden`} disabled={!isFormValid()} onClick={handleLoginButton} />
+      </div>
+      <div className="">
+        <input type="submit" value={`${state.isLoading ? 'Loading ...' : 'Login'}`} className={`${!isFormValid() ? 'cursor-no-drop bg-slate-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-50' : 'cursor-pointer bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500'}  mx-auto text-2xl flex items-center py-2 my-3  text-slate-200  w-48 justify-center rounded-full space-x-3 overflow-hidden`} disabled={!isFormValid()} onClick={handleLoginButton} />
 
-        </div>
-        <div className="mx-auto text-2xl flex items-center py-3 text-slate-200">
-          <p className="text-base">
-            Not a member? <span className="text-lg">Signup</span>
-          </p>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div className="mx-auto text-2xl flex items-center py-3 text-slate-200">
+        <p className="text-base">
+          Not a member? <span className="text-lg text-lime-600 font-bold cursor-pointer">Signup</span>
+        </p>
+      </div>
+      <div className="mx-auto text-2xl flex items-center py-3 text-slate-200 underline ">
+        <p className="text-base cursor-pointer ">
+          forgot password
+        </p>
+      </div>
+    </form>
   );
 }
