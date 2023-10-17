@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Route,Routes  } from 'react-router-dom';
 import ToggleButton from "./ToggleButton";
 import DashBoard from "./DashBoard";
+import bgImage from './backgroundImage.jpg'
+
 
 
 function App() {
@@ -9,7 +11,7 @@ function App() {
     <div
       className="flex justify-center items-center"
       style={{
-        backgroundImage: `url('https://wallpapers.com/images/featured/ultra-hd-wazf67lzyh5q7k32.jpg')`,
+        backgroundImage: `url(${bgImage})`,
         backgroundAttachment:'fixed',
         backgroundRepeat:'no-repeat',
         backgroundSize:'100% 100%',

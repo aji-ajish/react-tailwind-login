@@ -44,7 +44,6 @@ export default function DashBoard() {
     userEmail: "",
     userPhone: "",
   })
-  console.log(editUserData.userName);
   const initialState = {
     userName: '',
     userEmail: '',
